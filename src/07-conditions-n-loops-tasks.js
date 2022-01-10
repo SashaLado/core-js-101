@@ -27,8 +27,15 @@
  *  21 => 'Fizz'
  *
  */
-function getFizzBuzz(/* num */) {
-  throw new Error('Not implemented');
+function getFizzBuzz(num) {
+  if (num % 15 === 0) {
+    return 'FizzBuzz';
+  } if (num % 5 === 0) {
+    return 'Buzz';
+  } if (num % 3 === 0) {
+    return 'Fizz';
+  }
+  return num;
 }
 
 
@@ -43,8 +50,8 @@ function getFizzBuzz(/* num */) {
  *   5  => 120
  *   10 => 3628800
  */
-function getFactorial(/* n */) {
-  throw new Error('Not implemented');
+function getFactorial(n) {
+  return (n !== 1) ? n * getFactorial(n - 1) : 1;
 }
 
 
@@ -60,8 +67,9 @@ function getFactorial(/* n */) {
  *   5,10  =>  45 ( = 5+6+7+8+9+10 )
  *   -1,1  =>  0  ( = -1 + 0 + 1 )
  */
-function getSumBetweenNumbers(/* n1, n2 */) {
-  throw new Error('Not implemented');
+function getSumBetweenNumbers(n1, n2) {
+  // eslint-disable-next-line no-mixed-operators
+  return ((n2 - n1) + 1) * (n1 + n2) / 2;
 }
 
 
@@ -80,8 +88,10 @@ function getSumBetweenNumbers(/* n1, n2 */) {
  *   10,1,1   =>  false
  *   10,10,10 =>  true
  */
-function isTriangle(/* a, b, c */) {
-  throw new Error('Not implemented');
+function isTriangle(a, b, c) {
+  if (a <= 0 || b <= 0 || c <= 0) return false;
+
+  return a + b > c && a + c > b && c + b > a;
 }
 
 
@@ -141,15 +151,16 @@ function doRectanglesOverlap(/* rect1, rect2 */) {
  *
  * @param {object} circle
  * @param {object} point
- * @return {bool}
+ * @return {boolean}
  *
  * @example:
  *   { center: { x:0, y:0 }, radius:10 },  { x:0, y:0 }     => true
  *   { center: { x:0, y:0 }, radius:10 },  { x:10, y:10 }   => false
  *
  */
-function isInsideCircle(/* circle, point */) {
-  throw new Error('Not implemented');
+function isInsideCircle(circle, point) {
+  return (point.x - circle.center.x) * (point.x - circle.center.x)
+    + (point.y - circle.center.y) * (point.y - circle.center.y) < circle.radius * circle.radius;
 }
 
 
@@ -157,15 +168,22 @@ function isInsideCircle(/* circle, point */) {
  * Returns the first non repeated char in the specified strings otherwise returns null.
  *
  * @param {string} str
- * @return {string}
+ * @return {string|null}
  *
  * @example:
  *   'The quick brown fox jumps over the lazy dog' => 'T'
  *   'abracadabra'  => 'c'
  *   'entente' => null
  */
-function findFirstSingleChar(/* str */) {
-  throw new Error('Not implemented');
+function findFirstSingleChar(str) {
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < str.length; i++) {
+    const c = str.charAt(i);
+    if (str.indexOf(c) === i && str.indexOf(c, i + 1) === -1) {
+      return c;
+    }
+  }
+  return null;
 }
 
 
@@ -191,8 +209,12 @@ function findFirstSingleChar(/* str */) {
  *   5, 3, true, true   => '[3, 5]'
  *
  */
-function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
-  throw new Error('Not implemented');
+function getIntervalString(a, b, isStartIncluded, isEndIncluded) {
+  const min = (a < b) ? a : b;
+  const max = (a > b) ? a : b;
+  const startIncluded = (isStartIncluded) ? '[' : '(';
+  const endIncluded = (isEndIncluded) ? ']' : ')';
+  return `${startIncluded}${min}, ${max}${endIncluded}`;
 }
 
 
@@ -208,8 +230,8 @@ function getIntervalString(/* a, b, isStartIncluded, isEndIncluded */) {
  * 'rotator' => 'rotator'
  * 'noon' => 'noon'
  */
-function reverseString(/* str */) {
-  throw new Error('Not implemented');
+function reverseString(str) {
+  return str.split('').reverse().join('');
 }
 
 
@@ -225,8 +247,17 @@ function reverseString(/* str */) {
  *   87354 => 45378
  *   34143 => 34143
  */
-function reverseInteger(/* num */) {
-  throw new Error('Not implemented');
+function reverseInteger(num) {
+  // eslint-disable-next-line camelcase
+  let rev_num = 0;
+  while (num > 0) {
+    // eslint-disable-next-line camelcase,no-mixed-operators
+    rev_num = rev_num * 10 + num % 10;
+    // eslint-disable-next-line no-param-reassign
+    num = Math.floor(num / 10);
+  }
+  // eslint-disable-next-line camelcase
+  return rev_num;
 }
 
 
@@ -236,7 +267,6 @@ function reverseInteger(/* num */) {
  *
  * See algorithm here : https://en.wikipedia.org/wiki/Luhn_algorithm
  *
- * @param {number} cnn
  * @return {boolean}
  *
  * @example:
@@ -249,9 +279,26 @@ function reverseInteger(/* num */) {
  *   4571234567890111 => false
  *   5436468789016589 => false
  *   4916123456789012 => false
+ * @param ccn
  */
-function isCreditCardNumber(/* ccn */) {
-  throw new Error('Not implemented');
+function isCreditCardNumber(ccn) {
+  const regex = new RegExp('^[0-9]{16}$');
+  if (!regex.test(ccn)) return false;
+
+  let sum = 0;
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < ccn.length; i++) {
+    // eslint-disable-next-line radix
+    let intVal = parseInt(ccn.substr(i, 1));
+    if (i % 2 === 0) {
+      intVal *= 2;
+      if (intVal > 9) {
+        intVal = 1 + (intVal % 10);
+      }
+    }
+    sum += intVal;
+  }
+  return (sum % 10) === 0;
 }
 
 /**
@@ -268,8 +315,21 @@ function isCreditCardNumber(/* ccn */) {
  *   10000 ( 1+0+0+0+0 = 1 ) => 1
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
-function getDigitalRoot(/* num */) {
-  throw new Error('Not implemented');
+function getDigitalRoot(num) {
+  const digits = num.toString().split('').map(Number);
+  let sum = 0;
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < digits.length; i++) {
+    sum += digits[i];
+  }
+  const sumString = sum.toString();
+  if (sumString.length > 1) {
+    const sumDigits = sumString.split('').map(Number);
+    const firstSumDigit = sumDigits.slice(0);
+    const lastSumDigit = sumDigits.slice(-1);
+    return firstSumDigit[0] + lastSumDigit[0];
+  }
+  return sum;
 }
 
 
@@ -294,8 +354,48 @@ function getDigitalRoot(/* num */) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  const stack = [];
+
+  // Traversing the Expression
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < str.length; i++) {
+    const x = str[i];
+
+    if (x === '(' || x === '[' || x === '{') {
+      // Push the element in the stack
+      stack.push(x);
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+
+    // If current character is not opening
+    // bracket, then it must be closing.
+    // So stack cannot be empty at this point.
+    if (stack.length === 0) return false;
+
+    let check;
+    // eslint-disable-next-line default-case
+    switch (x) {
+      case ')':
+        check = stack.pop();
+        if (check === '{' || check === '[') return false;
+        break;
+
+      case '}':
+        check = stack.pop();
+        if (check === '(' || check === '[') return false;
+        break;
+
+      case ']':
+        check = stack.pop();
+        if (check === '(' || check === '{') return false;
+        break;
+    }
+  }
+
+  // Check Empty Stack
+  return (stack.length === 0);
 }
 
 
@@ -319,8 +419,9 @@ function isBracketsBalanced(/* str */) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  // eslint-disable-next-line no-bitwise
+  return (num >>> 0).toString(n);
 }
 
 
@@ -359,8 +460,22 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const result = [];
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < m1.length; i++) {
+    result[i] = [];
+    // eslint-disable-next-line no-plusplus
+    for (let j = 0; j < m2[0].length; j++) {
+      let sum = 0;
+      // eslint-disable-next-line no-plusplus
+      for (let k = 0; k < m1[0].length; k++) {
+        sum += m1[i][k] * m2[k][j];
+      }
+      result[i][j] = sum;
+    }
+  }
+  return result;
 }
 
 
